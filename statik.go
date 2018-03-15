@@ -38,6 +38,7 @@ const (
 var (
 	flagSrc        = flag.String("src", path.Join(".", "public"), "The path of the source directory.")
 	flagDest       = flag.String("dest", ".", "The destination path of the generated package.")
+	flagName       = flag.String("name", "default", "Name of the package repository.")
 	flagNoMtime    = flag.Bool("m", false, "Ignore modification times on files.")
 	flagNoCompress = flag.Bool("Z", false, "Do not use compression to shrink the files.")
 	flagForce      = flag.Bool("f", false, "Overwrite destination file if it already exists.")
@@ -180,16 +181,16 @@ func generateSource(srcPath string) (file *os.File, err error) {
 package %s
 
 import (
-	"github.com/rakyll/statik/fs"
+	"github.com/robermorales/statik/fs"
 )
 
 func init() {
 	data := "`, namePackage)
 	FprintZipData(&qb, buffer.Bytes())
-	fmt.Fprint(&qb, `"
-	fs.Register(data)
+	fmt.Fprintf(&qb, `"
+	fs.Register("%s", data)
 }
-`)
+`, *flagName)
 
 	if err = ioutil.WriteFile(f.Name(), qb.Bytes(), 0644); err != nil {
 		return
