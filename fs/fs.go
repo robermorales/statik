@@ -56,7 +56,6 @@ func New(name string) (http.FileSystem, error) {
 	}
 
 	zipData := zipDatas[name]
-
 	if zipData == "" {
 		return nil, errors.New("statik/fs: no zip data registered")
 	}
